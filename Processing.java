@@ -5,8 +5,11 @@ public class Processing {
 
 	private ArrayList<String> frame, trajectory, x, y, x_raw, y_raw;
 	private ArrayList<Double> dx, dy, deflection, nanometers;
-	private String [][] data;
+	private String [][] data;// newData;
+	private Object [][] newData;
 	private int rows;
+	private double average, standardDeviation;
+
 
 
 	public Processing () {	
@@ -15,8 +18,6 @@ public class Processing {
 
 
 	/*Getters and Setters*/
-
-
 
 	public ArrayList<String> getFrame() {return frame;}
 	public void setFrame(ArrayList<String> frame) {this.frame = frame;}
@@ -30,8 +31,9 @@ public class Processing {
 	public void setDeflection(ArrayList<Double> deflection) {this.deflection = deflection;}
 	public ArrayList<Double> getNanometers() {return nanometers;}
 	public void setNanometers(ArrayList<Double> nanometers) {this.nanometers = nanometers;}
+	
+	
 	public Processing (ArrayList<String> fileLine) {
-
 
 		rows = fileLine.size();
 		int columns = 8;
@@ -97,6 +99,50 @@ public class Processing {
 		return nanometers;
 	}
 	
+	public Object [][] newDataArray () {
+		
+		int columns = 10;
+		newData = new Object [rows][columns];
+		//newData = new String [rows][columns];
+		
+		for (int i = 0; i < rows; i++) {
+			
+			newData [i][0] = frame.get(i);
+			newData [i][1] = trajectory.get(i);
+			newData [i][2] = x.get(i);
+			newData [i][3] = y.get(i);
+			newData [i][4] = x_raw.get(i);
+			newData [i][5] = y_raw.get(i);
+			newData [i][6] = dx.get(i);
+			newData [i][7] = dy.get(i);
+			newData [i][8] = deflection.get(i);
+			newData [i][9] = nanometers.get(i);		
+			System.out.println("Here is newData: " + newData[i][8]);
+		}
+		
+		return newData;
+	}
+	
+	
+	public void getAverages () {
+		
+		double something = 0.0;
+		average = 0;
+		standardDeviation = 0;
+		
+		for (int i = 0; i < rows; i++) {
+			
+		if () {
+		
+			average = something/rows;
+			System.out.println("Averages: " + "\n" + String.format("%.4f",average));
+			}
+		else {
+			System.out.println("We're missing something here");
+		}
+		}
+		
+	}
 	
 	public String outputString () { // For the reader.
 		

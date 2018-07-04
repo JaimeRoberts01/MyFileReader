@@ -95,7 +95,7 @@ public class GUIClass extends JFrame implements ActionListener {
 		try {
 
 			//file = "Book1C.csv";
-			file = "Jemma.csv";
+			file = "Book1C.csv";
 			fileLine = new ArrayList<String>();
 			
 			reader = new FileReader (file);
@@ -105,10 +105,10 @@ public class GUIClass extends JFrame implements ActionListener {
 				fileLine.add (line);
 			}
 			
-//			for (String s : fileLine) {
-//				ReportFrame.reportFormatter(s);
-//				//System.out.println (s);
-//			}
+			for (String s : fileLine) {
+				ReportFrame.reportFormatter(s);
+				//System.out.println (s);
+			}
 			
 			Process = new Processing (fileLine);	
 		
@@ -174,12 +174,14 @@ public class GUIClass extends JFrame implements ActionListener {
 			System.out.println("We definitely hit button 1");
 			Process.pillarDeflection();
 			Process.nanoMeters();
+			Process.newDataArray();
 			System.out.println("And if you're seeing this, we did something!");
 		}
 
 		if (e.getSource() == Button2) {
 			System.out.println("We definitely hit button 2");	// I want this button to bring up the display page - testing to see if it prints out properly.
 			displayOutput();
+			Process.getAverages();
 			System.out.println("And if you're seeing this, we did something!");
 		}
 
