@@ -49,4 +49,3 @@ public class ReportFrame2 extends JFrame {
 		displayFile.append (Process.outputString());
 	}
 }
-

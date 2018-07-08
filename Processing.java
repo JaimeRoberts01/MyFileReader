@@ -3,13 +3,12 @@ import java.util.*;
 
 public class Processing {
 
-	private ArrayList<String> frame, trajectory, x, y, x_raw, y_raw;
-	private ArrayList<Double> dx, dy, deflection, nanometers;
-	private String [][] data;// newData;
+	private ArrayList<String> frame, trajectory;
+	private ArrayList<Double> x, y, x_raw, y_raw, dx, dy, deflection, nanometers, picoNewtons;
+	private String [][] data;
 	private Object [][] newData;
 	private int rows;
 	private double average, standardDeviation;
-
 
 
 	public Processing () {	
@@ -44,24 +43,27 @@ public class Processing {
 
 		frame = new ArrayList<String>();
 		trajectory = new ArrayList<String>();
-		x = new ArrayList<String>();
-		y = new ArrayList<String>();
-		x_raw = new ArrayList<String>();
-		y_raw = new ArrayList<String>();
+		x = new ArrayList<Double>();
+		y = new ArrayList<Double>();
+		x_raw = new ArrayList<Double>();
+		y_raw = new ArrayList<Double>();
 		dx = new ArrayList<Double>();
 		dy = new ArrayList<Double>();
 
 
+		
 		for (int i = 0; i < rows; i++) {
 			data [i] = fileLine.get(i).split(",");
 			frame.add (data [i][0]);
 			trajectory.add (data [i][1]);
-			x.add (data [i][2]);
-			y.add (data [i][3]);
-			x_raw.add (data [i][4]);
-			y_raw.add (data [i][5]);
+			x.add (Double.parseDouble(data [i][2]));
+			y.add (Double.parseDouble(data [i][3]));
+			x_raw.add (Double.parseDouble(data [i][4]));
+			y_raw.add (Double.parseDouble(data [i][5]));
 			dx.add (Double.parseDouble(data [i][6]));
 			dy.add (Double.parseDouble(data [i][7]));
+		}
+			
 		}
 
 		//		for (String s : trajectory) {
@@ -69,7 +71,7 @@ public class Processing {
 		//		}
 
 		//System.out.println("frame: " + frame + "\n" + "trajectory: " + trajectory + "\n" + "dx: " + dx + "\n" + "dy: " + dy);
-	} 
+	 
 	
 
 	public ArrayList<Double> pillarDeflection () { // This method should calculate deflection.
@@ -99,11 +101,32 @@ public class Processing {
 		return nanometers;
 	}
 	
+	
+	public ArrayList<Double> forces () {
+		
+		picoNewtons = new ArrayList <Double>();
+		
+		double constant = (double) 3/64;
+		double E = 2.0;
+		double pi = Math.PI;
+		double diameter = 0.5;
+		double length = 1.3;
+		
+		for (int i=0; i<rows; i++) {
+			
+			double picoMeters = nanometers.get(i)*1000;
+			double picoForces = (constant * pi *E * (Math.pow(diameter, 4)/Math.pow(length, 3))*picoMeters);
+			picoNewtons.add(picoForces);
+			System.out.println(String.format("%.10f", picoNewtons.get(i)));
+		}
+		return picoNewtons;
+	}
+	
+	
 	public Object [][] newDataArray () {
 		
-		int columns = 10;
+		int columns = 11;
 		newData = new Object [rows][columns];
-		//newData = new String [rows][columns];
 		
 		for (int i = 0; i < rows; i++) {
 			
@@ -116,33 +139,60 @@ public class Processing {
 			newData [i][6] = dx.get(i);
 			newData [i][7] = dy.get(i);
 			newData [i][8] = deflection.get(i);
-			newData [i][9] = nanometers.get(i);		
-			System.out.println("Here is newData: " + newData[i][8]);
+			newData [i][9] = nanometers.get(i);	
+			newData [i][10] = picoNewtons.get(i); 
+			System.out.println("Here is newData: " + Arrays.toString(newData[i]));
 		}
 		
 		return newData;
 	}
 	
-	
-	public void getAverages () {
+	public void byFrame () { //This will need checks for non-existent frames
 		
-		double something = 0.0;
-		average = 0;
-		standardDeviation = 0;
+		double whatever = 0.0;
+		ArrayList <Double> byFrame = new ArrayList<Double>();
 		
-		for (int i = 0; i < rows; i++) {
+		for (int i = 0; i<rows; i++) {
+		
+			String frameID = (String) newData[i][0];
 			
-		if () {
-		
-			average = something/rows;
-			System.out.println("Averages: " + "\n" + String.format("%.4f",average));
+			if (frameID.equals("1")) {
+				double something = (double) newData [i][10];
+				byFrame.add(something);
+				whatever += (double) newData [i][10];
+				//System.out.println("Here is the row for Frame: " + Arrays.toString(newData[i]));
+				System.out.println("Here is picoNewtons for Frame: " + (newData[i][10]));
 			}
-		else {
-			System.out.println("We're missing something here");
 		}
-		}
+		System.out.println("Here is byframe: " + byFrame);
+		double average = whatever/byFrame.size();
+		System.out.println("Here is byframe average: " + average);
 		
 	}
+	
+	
+	public void byTrajectory () { //This will need checks for non-existent trajectories
+		
+		double whatever = 0.0;
+		ArrayList <Double> byTrajectory = new ArrayList<Double>();
+		
+		for (int i = 0; i<rows; i++) {
+			
+			String pillarID = (String) newData[i][1];
+			
+			if (pillarID.equals("2")) {
+				double something = (double) newData[i][10];
+				byTrajectory.add(something);
+				whatever += (double) newData [i][10];// this needs changing for a double in each loop
+				//System.out.println("Here is the row for Trajectory: " + Arrays.toString(newData[i]));
+				System.out.println("Here is picoNewtons for Trajectory: " + (newData[i][10]));
+			}
+		}
+		System.out.println("Here is byTrajectory: " + byTrajectory);
+		double average = whatever/byTrajectory.size();
+		System.out.println("Here is byTrajecotry average: " + average);
+	}
+	
 	
 	public String outputString () { // For the reader.
 		
